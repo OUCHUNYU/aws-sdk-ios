@@ -15,11 +15,11 @@
 
 #import "AWSService.h"
 
-#import <UIKit/UIKit.h>
 #import "AWSSynchronizedMutableDictionary.h"
 #import "AWSURLResponseSerialization.h"
 #import "AWSLogging.h"
 #import "AWSCategory.h"
+#import "FTWDevice.h"
 
 NSString *const AWSiOSSDKVersion = @"2.5.1";
 NSString *const AWSServiceErrorDomain = @"com.amazonaws.AWSServiceErrorDomain";
@@ -142,11 +142,12 @@ static NSString *const AWSServiceConfigurationUnknown = @"Unknown";
     static NSString *_userAgent = nil;
     static dispatch_once_t onceToken;
     dispatch_once(&onceToken, ^{
-        NSString *systemName = [[[UIDevice currentDevice] systemName] stringByReplacingOccurrencesOfString:@" " withString:@"-"];
+        FTWDevice *device = FTWDevice.currentDevice;
+        NSString *systemName = [device.systemName stringByReplacingOccurrencesOfString:@" " withString:@"-"];
         if (!systemName) {
             systemName = AWSServiceConfigurationUnknown;
         }
-        NSString *systemVersion = [[UIDevice currentDevice] systemVersion];
+        NSString *systemVersion = [[NSProcessInfo processInfo] operatingSystemVersionString];
         if (!systemVersion) {
             systemVersion = AWSServiceConfigurationUnknown;
         }
@@ -154,14 +155,14 @@ static NSString *const AWSServiceConfigurationUnknown = @"Unknown";
         if (!localeIdentifier) {
             localeIdentifier = AWSServiceConfigurationUnknown;
         }
-        _userAgent = [NSString stringWithFormat:@"aws-sdk-iOS/%@ %@/%@ %@", AWSiOSSDKVersion, systemName, systemVersion, localeIdentifier];
+        _userAgent = [NSString stringWithFormat:@"aws-sdk-osx/%@ %@/%@ %@", AWSiOSSDKVersion, systemName, systemVersion, localeIdentifier];
     });
-
+    
     NSMutableString *userAgent = [NSMutableString stringWithString:_userAgent];
     for (NSString *prefix in _globalUserAgentPrefixes) {
         [userAgent appendFormat:@" %@", prefix];
     }
-
+    
     return [NSString stringWithString:userAgent];
 }
 

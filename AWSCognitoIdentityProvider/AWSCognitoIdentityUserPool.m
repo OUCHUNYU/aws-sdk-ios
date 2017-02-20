@@ -22,6 +22,7 @@
 #import <CommonCrypto/CommonHMAC.h>
 #import "NSData+AWSCognitoIdentityProvider.h"
 #import "AWSCognitoIdentityProviderModel.h"
+#import "FTWDevice.h"
 
 static const NSString * AWSCognitoIdentityUserPoolCurrentUser = @"currentUser";
 
@@ -267,18 +268,17 @@ AWSCognitoIdentityUserAttributeType* attribute(NSString *name, NSString *value) 
 }
 
 - (NSDictionary<NSString *,NSString *>*)cognitoValidationData {
-    UIDevice *device = [UIDevice currentDevice];
+    FTWDevice *device = FTWDevice.currentDevice;
     NSBundle *bundle = [NSBundle mainBundle];
     NSString *bundleVersion = [bundle objectForInfoDictionaryKey:(NSString*)kCFBundleVersionKey];
     NSString *bundleShortVersion = [bundle objectForInfoDictionaryKey:@"CFBundleShortVersionString"];
     NSMutableDictionary * result = [NSMutableDictionary new];
-
     NSArray * atts = @[
                        attribute(@"cognito:iOSVersion", device.systemVersion),
                        attribute(@"cognito:systemName", device.systemName),
-                       attribute(@"cognito:deviceName", device.name),
+                       attribute(@"cognito:deviceName", device.localizedName),
                        attribute(@"cognito:model", device.model),
-                       attribute(@"cognito:idForVendor", device.identifierForVendor.UUIDString),
+                       attribute(@"cognito:idForVendor", device.uniqueIdentifier),
                        attribute(@"cognito:bundleId", bundle.bundleIdentifier),
                        attribute(@"cognito:bundleVersion", bundleVersion),
                        attribute(@"cognito:bundleShortV", bundleShortVersion)

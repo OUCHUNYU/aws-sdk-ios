@@ -22,6 +22,7 @@
 #import "AWSJKBigInteger.h"
 #import "NSData+AWSCognitoIdentityProvider.h"
 #import <CommonCrypto/CommonDigest.h>
+#import "FTWDevice.h"
 
 @interface AWSCognitoIdentityUserPool()
 
@@ -348,8 +349,7 @@ static const NSString * AWSCognitoIdentityUserUserAttributePrefix = @"userAttrib
             AWSCognitoIdentityProviderConfirmDeviceRequest * request = [AWSCognitoIdentityProviderConfirmDeviceRequest new];
             request.accessToken = authResult.accessToken;
             request.deviceKey = deviceKey;
-            request.deviceName = [[UIDevice currentDevice] name];
-
+            request.deviceName = [[FTWDevice currentDevice] localizedName];
             AWSCognitoIdentityProviderSrpHelper * srpHelper = [[AWSCognitoIdentityProviderSrpHelper alloc] initWithPoolName:deviceGroup userName:deviceKey password:secret];
             request.deviceSecretVerifierConfig = [AWSCognitoIdentityProviderDeviceSecretVerifierConfigType new];
             request.deviceSecretVerifierConfig.salt = [[NSData aws_dataWithSignedBigInteger:srpHelper.salt] base64EncodedStringWithOptions:0];
