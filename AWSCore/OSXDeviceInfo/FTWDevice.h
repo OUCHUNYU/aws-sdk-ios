@@ -21,7 +21,7 @@
 #include <sys/socket.h> // Per msqr
 #include <sys/sysctl.h>
 #include <net/if.h>
-#include <net/if_dl.h>
+// #include <net/if_dl.h>
 
 #import "NSString+MD5.h"
 
